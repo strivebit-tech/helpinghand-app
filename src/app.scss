@@ -1,0 +1,15 @@
+$theme-colors: (
+  "primary": #039be5,
+  "success": #4caf50,
+  "danger": #e53935,
+  "dark": #212121,
+  "accent": #ff5722,
+  "accent2": #8e24aa,
+  "warning": #ffb300
+);
+
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+.btn {
+  box-shadow: none !important;
+}
