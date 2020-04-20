@@ -6,6 +6,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import { Help } from "./components/Help";
 import { NavbarMenu } from "./components/NavbarMenu";
 import { HelpingHeros } from "./components/HelpingHeros";
+import { Gallery } from "./components/Gallery";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path={"/"} exact>
             <Main />
             <HelpingHeros />
+            {/* <Gallery /> */}
           </Route>
           <Route path={"/askforhelp"}>
             <AskForHelp />
@@ -25,6 +27,13 @@ function App() {
             <Help />
           </Route>
         </Container>
+
+        <div className="mt-5 py-5">
+          <h5 className="text-center">
+            Developed with <span className="text-danger">&#9829;</span> by a
+            small team.
+          </h5>
+        </div>
       </BrowserRouter>
     </>
   );
