@@ -22,9 +22,9 @@ export const NavbarMenu = () => {
         <Navbar.Brand>
           <div className="d-flex align-items-center">
             <img src={logo} width="50" alt={"Helping Hands "} />
-            <span className="m-0 ml-3 h3 text-accent2 font-weight-medium">
+            <strong className="m-0 ml-3 text-danger font-weight-bold">
               Helping Hands
-            </span>
+            </strong>
           </div>
         </Navbar.Brand>
       </Link>

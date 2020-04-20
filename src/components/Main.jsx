@@ -15,7 +15,7 @@ export const Main = () => {
             alt={"Helping hands"}
           />
           <h1 className="text-accent">Join hands to fight the pandemic.</h1>
-          <h4 className="font-weight-bold">#IndiaFirghtsCorona</h4>
+          <h4 className="font-weight-bold">#IndiaFightsCorona</h4>
         </Col>
 
         <Col

@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
+import Geocode from "../lib/Geocode";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng
+} from "react-places-autocomplete";
 
 export const AskForHelp = () => {
+  console.log("GEOCODE", Geocode);
   const [values, setValues] = useState({
     name: "",
     mobile: "",
@@ -10,6 +16,13 @@ export const AskForHelp = () => {
   });
   const submitForm = e => {
     e.preventDefault();
+  };
+
+  const handleSelect = address => {
+    geocodeByAddress(address)
+      .then(results => getLatLng(results[0]))
+      .then(latLng => console.log("Success", latLng))
+      .catch(error => console.error("Error", error));
   };
 
   const handleChange = e => {
@@ -45,11 +58,59 @@ export const AskForHelp = () => {
 
           <Form.Group>
             <Form.Label>Address</Form.Label>
-            <Form.Control
+            {/* <Form.Control
               name={"address"}
               onChange={handleChange}
               type="text"
-            ></Form.Control>
+            ></Form.Control> */}
+
+            <PlacesAutocomplete
+              value={values.address}
+              onChange={address => {
+                const v = { ...values, address };
+                setValues(v);
+              }}
+              className="form-control"
+              onSelect={handleSelect}
+            >
+              {({
+                getInputProps,
+                suggestions,
+                getSuggestionItemProps,
+                loading
+              }) => (
+                <div>
+                  <input
+                    {...getInputProps({
+                      placeholder: "Start typing your address ...",
+                      className: "form-control"
+                    })}
+                  />
+                  <div className="bg-white shadow-sm">
+                    {loading && <div>Loading...</div>}
+                    {suggestions.map(suggestion => {
+                      const className = suggestion.active
+                        ? "px-3 py-2 bg-light"
+                        : "px-3 py-2";
+                      // inline style for demonstration purpose
+                      const style = suggestion.active
+                        ? { backgroundColor: "#fafafa", cursor: "pointer" }
+                        : { backgroundColor: "#ffffff", cursor: "pointer" };
+                      return (
+                        <div
+                          {...getSuggestionItemProps(suggestion, {
+                            className,
+                            style
+                          })}
+                        >
+                          <span>{suggestion.description}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </PlacesAutocomplete>
           </Form.Group>
 
           <Form.Group>

@@ -5,15 +5,17 @@ import { AskForHelp } from "./components/AskHelp";
 import { BrowserRouter, Route } from "react-router-dom";
 import { Help } from "./components/Help";
 import { NavbarMenu } from "./components/NavbarMenu";
+import { HelpingHeros } from "./components/HelpingHeros";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <NavbarMenu />
-        <Container fluid>
+        <Container>
           <Route path={"/"} exact>
             <Main />
+            <HelpingHeros />
           </Route>
           <Route path={"/askforhelp"}>
             <AskForHelp />
