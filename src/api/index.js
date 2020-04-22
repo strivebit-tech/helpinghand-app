@@ -25,7 +25,7 @@ export default {
       `http://apis.mapmyindia.com/advancedmaps/v1/sznnv7o54e695iizd1bga48yzmf5xvzq/rev_geocode?lat=${lat}&lng=${lng}`
     );
 
-    console.log(await response);
+    console.log("RESPONSE GEOCODE", await response);
     return await response.json();
   },
 
