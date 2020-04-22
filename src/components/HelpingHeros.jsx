@@ -18,6 +18,10 @@ const HelpingHeroCard = styled.div`
   &:nth-child(1) {
     margin-left: 0;
   }
+
+  &:last-child {
+    margin-right: 0;
+  }
 `;
 
 const HelpingHerosContainer = styled.div`

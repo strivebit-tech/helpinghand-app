@@ -7,6 +7,8 @@ import { Help } from "./components/Help";
 import { NavbarMenu } from "./components/NavbarMenu";
 import { HelpingHeros } from "./components/HelpingHeros";
 import { Gallery } from "./components/Gallery";
+import { Adduser } from "./components/AddUser";
+import { Contribution } from "./components/Contribution";
 
 function App() {
   return (
@@ -25,6 +27,14 @@ function App() {
 
           <Route path={"/helpothers"}>
             <Help />
+          </Route>
+
+          <Route path={"/adduser"}>
+            <Adduser />
+          </Route>
+
+          <Route path={"/contributions"}>
+            <Contribution />
           </Route>
         </Container>
 
