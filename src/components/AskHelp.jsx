@@ -20,7 +20,12 @@ export const AskForHelp = () => {
           setSuccess("Help submitted succesfully.");
           setShowForm(false);
         } else if (res.status === "Failed") {
-          setError(res.errors.mobile[0]);
+          let error = "";
+          for (let [key, value] of Object.entries(res.errors)) {
+            error += `${value}, `;
+          }
+
+          setError(error);
         }
       })
       .catch(err => {
