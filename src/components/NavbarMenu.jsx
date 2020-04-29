@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar, Nav, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import logo from "../assets/helpinghands.png";
+import auth from "../lib/auth";
 
 export const NavbarMenu = () => {
   const [time, setTime] = useState(new Date());
@@ -31,22 +32,19 @@ export const NavbarMenu = () => {
 
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-      <Navbar.Collapse className="ml-auto mr-4" id="basic-navbar-nav">
-        <Nav className={"ml-auto"}>
-          <strong>
-            {time.toDateString() + " " + time.toLocaleTimeString()}
-          </strong>
-          {/* <Nav.Item>
-              <Button variant="success" className="rounded-pill shadow-none">
-                Ask for help
-              </Button>
-            </Nav.Item>
-
-            <Nav.Item className="ml-md-3">
-              <Button variant="warning" className="rounded-pill  shadow-none">
-                Help Others
-              </Button>
-            </Nav.Item> */}
+      <Navbar.Collapse className="" id="basic-navbar-nav">
+        <Nav className={"ml-auto mr-2 align-items-center"}>
+          {auth.isAuthenticated() ? (
+            <Link to="/contributions" className="nav-link">
+              <Nav.Item>
+                <Button variant="light" className="rounded-pill shadow-none">
+                  <strong>Your Contributions</strong>
+                </Button>
+              </Nav.Item>
+            </Link>
+          ) : (
+            ""
+          )}
         </Nav>
       </Navbar.Collapse>
     </Navbar>

@@ -1,72 +1,145 @@
 import React, { useState } from "react";
-import { Row, Col, Button, Modal } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import { HelpItem } from "./HelpItem";
+import { FaSpinner, FaCircleNotch } from "react-icons/fa";
+import { MyModal } from "./Modal";
+import auth from "../lib/auth";
+import api from "../api";
 
 export const Help = () => {
   const [finding, setFinding] = useState(false);
-  const [position, setPosition] = useState(null);
+  const [data, setData] = useState([]);
+  const [position, setPosition] = useState({});
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [modalItem, setModalItem] = useState(null);
 
   const handleClose = () => {
     setShowModal(false);
   };
 
-  // console.log(position);
+  const findPeople = () => {
+    const { latitude, longitude } = position.coords || {};
+    api
+      .getNearbyPerson({ latitude, longitude })
+      .then(res => {
+        if (res.status === "Success") {
+          setData(res.data);
+        }
+      })
+      .catch(err => setError("Error finding persons."))
+      .finally(() => {
+        setFinding(false);
+      });
+  };
 
   React.useEffect(() => {
-    navigator.permissions.query({ name: "geolocation" }).then(function(result) {
-      if (result.state === "granted") {
-        getPosition(setPosition, setError);
-      } else if (result.state === "prompt") {
-        getPosition(setPosition, setError);
-      } else if (result.state === "denied") {
-        setError("User permission denied");
-      }
-    });
-  }, []);
+    if (position.coords) {
+      findPeople();
+    }
+  }, [position.coords]);
 
-  const getPosition = (setPostition, setError) => {
+  const doHelp = needy_id => {
+    const helper_id = auth.isAuthenticated();
+    api
+      .doHelp(needy_id, helper_id)
+      .then(res => {
+        if (res.status === "Success") {
+          setSuccess("Wonderful, you can now contact person to help him.");
+        } else {
+          setError("Oops, There is problem somewhere.");
+        }
+      })
+      .catch(error => setError("Some error has occured."));
+  };
+
+  const findnearByPeople = () => {
+    setFinding(true);
+    navigator &&
+      navigator.permissions &&
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then(function(result) {
+          if (result.state === "granted") {
+            getPosition(setPosition, setError);
+          } else if (result.state === "prompt") {
+            getPosition(setPosition, setError);
+          } else if (result.state === "denied") {
+            setError("User permission denied");
+          }
+        });
+  };
+
+  const getPosition = (setPosition, setError) => {
     navigator.geolocation.getCurrentPosition(setPosition, error =>
       setError(error.message)
     );
   };
 
-  const findPeople = () => {};
+  const helpPress = helpitem => {
+    if (!auth.isAuthenticated()) {
+      window.location.href = "adduser";
+      return;
+    }
+    setShowModal(true);
+    setModalItem(helpitem);
+  };
+
   return (
     <>
-      <Modal show={showModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <Row className="py-3">
+      {showModal && (
+        <MyModal
+          showModal={showModal}
+          handleClose={handleClose}
+          onSave={doHelp}
+          item={modalItem}
+        />
+      )}
+      <Row className="py-5">
         <Col md={9} sm={12} className="text-center  mx-auto ">
           <h4>People looking for help</h4>
-          <Button className="mt-3" variant="primary" onClick={findPeople}>
-            <strong>Find people</strong>
-          </Button>
+          {!finding && (
+            <Button
+              className="mt-3"
+              variant="primary"
+              onClick={findnearByPeople}
+            >
+              <strong>Find people</strong>
+            </Button>
+          )}
         </Col>
       </Row>
       <Row>
         <Col md={9} sm={12} className="">
-          {error && <h6 className="text-danger">{error}</h6>}
+          <div className="text-center">
+            {error && <h6 className="text-danger">{error}</h6>}
+            {success && <h6 className="text-success">{success}</h6>}
+          </div>
 
           {/* <h5>No results found.</h5> */}
         </Col>
         <Col md={9} className={"mt-4 mx-auto"}>
-          {finding
-            ? "Finding"
-            : [0, 0, 0, 0].map((i, k) => <HelpItem key={k} />)}
+          {finding ? (
+            <div className="text-center text-primary">
+              <div className="rotate">
+                <FaCircleNotch color="" size={30} />
+              </div>
+              Finding
+            </div>
+          ) : data.length ? (
+            data.map((i, k) => (
+              <HelpItem
+                data={i}
+                key={k}
+                onHelpPress={() => {
+                  helpPress(i);
+                }}
+              />
+            ))
+          ) : (
+            "No Person to help"
+          )}
         </Col>
       </Row>
     </>

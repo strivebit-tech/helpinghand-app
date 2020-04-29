@@ -1,7 +1,12 @@
-import { replace } from "formik";
-import auth from "../lib/auth";
-
 const s = "9a3d08fa-5bb3-11ea-9fa5-0200cd936042";
+const root = "https://helpings.herokuapp.com/api/";
+
+const headers = new Headers();
+headers.append("Content-Type", "application/json");
+headers.append(
+  "Authorization",
+  "Token 5feb126e-b663-4d22-9jkfdjkaur-46b1e7a4353eieomfueywomB2LRLxbmaESfqEX3u7TNC30jh-lvyNvyYh321V9FBoN6Ixg3DYAJSMNkJiwBfvdbdxCkQr_xubUKz7EpM7mtA==Iys"
+);
 
 export default {
   sendOtp: async (mobile, otp) => {
@@ -14,72 +19,71 @@ export default {
 
   verifyOtp: async (id, otp) => {
     const res = await fetch(
-      `https://2factor.in/API/V1/${s}/SMS/VIERFY${id}/${otp}`
+      `https://2factor.in/API/V1/${s}/SMS/VERIFY/${id}/${otp}`
     );
 
     return await res.json();
   },
 
-  getAddressfromLocation: async (lat, lng) => {
-    const response = await fetch(
-      `https://apis.mapmyindia.com/advancedmaps/v1/sznnv7o54e695iizd1bga48yzmf5xvzq/rev_geocode?lat=${lat}&lng=${lng}`
-    );
+  addPerson: async data => {
+    const res = await fetch(root + `person/create/`, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(data)
+    });
 
-    console.log("RESPONSE GEOCODE", await response);
-    return await response.json();
+    return await res.json();
   },
 
-  getAuthToken: async () => {
-    //Headers
-    const headers = new Headers();
-    headers.append("Content-Type", "application/x-www-form-urlencoded");
+  createNewHelper: async data => {
+    const res = await fetch(root + `helper/create/`, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(data)
+    });
 
-    const client_id =
-      "DQMqcA9v_ZrNWgcY0z5o9FjNDr9zc6-oyi2rZ5IrDlWhk5DueEh18_yiFbTofS5b_C6KBihqUOYxGhxaWO0_fg==";
-    const client_secret =
-      "ebEc8GH231ciXN2DqeNUYiAV7p9wjfrxvp9wDVv4wsdpfG3Euo63RB8RioSL8hNQjw2gJlrQxiGs9AVCsVughaMmXAM4AOWE";
-    const grant_type = "client_credentials";
+    return await res.json();
+  },
 
-    const body =
-      encodeURIComponent("grant_type") +
-      "=" +
-      encodeURIComponent(grant_type) +
-      "&" +
-      encodeURIComponent("client_id") +
-      "=" +
-      client_id +
-      "&" +
-      encodeURIComponent("client_secret") +
-      "=" +
-      client_secret;
-    const response = await fetch(
-      "https://outpost.mapmyindia.com/api/security/oauth/token",
-      {
+  getPerson: async data => {
+    const res = await fetch(root + `person/all/`, {
+      method: "GET",
+      headers: headers
+    });
+
+    return await res.json();
+  },
+
+  getNearbyPerson: async data => {
+    try {
+      const res = await fetch(root + `person/needy/near/`, {
         method: "POST",
-        body: body,
-        headers: headers
-      }
-    ).json();
+        headers: headers,
+        body: JSON.stringify(data)
+      });
 
-    if (await response.error) {
-      throw new Error(response);
-      return false;
-    } else {
-      auth.setAPIToken(response.access_token);
-      return false;
+      return await res.json();
+    } catch (err) {
+      return err;
     }
   },
 
-  getGeocodeAddress: async address => {
-    const token = auth.getAPIAuthToken();
-    const headers = new Headers();
-    headers.append("Authorization", `bearer ${token}`);
+  doHelp: async (needy_id, helper_id) => {
+    const res = await fetch(root + `person/help/`, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({ helper_id, needy_id })
+    });
 
-    return await fetch(
-      `https://atlas.mapmyindia.com/api/places/geocode?address=${address}`,
-      {
-        headers: headers
-      }
-    ).json();
+    return await res.json();
+  },
+
+  getHelpDone: async helper_id => {
+    const res = await fetch(root + `person/helper/${helper_id}/`, {
+      method: "GET",
+      headers: headers
+    });
+
+    return await res.json();
   }
 };

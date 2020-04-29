@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import auth from "../lib/auth";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
-
-const contributions = [];
+import { ContributionItem } from "./ContributionItem";
+import api from "../api";
 
 export const Contribution = () => {
+  const [contributions, setContributions] = useState([]);
+
   React.useEffect(() => {
-    auth.setAuthentication("7880329858");
-  }, []);
+    const id = auth.isAuthenticated();
+    if (id) {
+      api.getHelpDone(id).then(res => {
+        if (res.status === "Success") {
+          setContributions(res.data.to);
+        }
+      });
+    }
+  }, [contributions.length]);
+
+  console.log(contributions);
 
   return auth.isAuthenticated() ? (
     <Row className="py-5">
@@ -18,7 +29,7 @@ export const Contribution = () => {
         {contributions.length === 0 ? (
           <h6 className="text-accent">
             It looks like you don't have any contributions,{" "}
-            <Link to="helpothers">Contribute Now</Link>
+            <Link to="helpothers">Contribute Now by Helping others</Link>
           </h6>
         ) : (
           <h6 className="text-accent">
@@ -26,6 +37,13 @@ export const Contribution = () => {
             continous support.
           </h6>
         )}
+      </Col>
+      <Col md={6} className="mx-auto mt-4">
+        {contributions.length
+          ? contributions.map((c, index) => (
+              <ContributionItem data={c} key={index} />
+            ))
+          : ""}
       </Col>
     </Row>
   ) : (

@@ -13,7 +13,7 @@ export const Gallery = () => {
             <img
               key={k}
               src={`https://picsum.photos/${image}`}
-              alt={`Image ${k}`}
+              alt={`my ${k}`}
               width={Math.min(220, 300, 340, 400, 200)}
               className="img-fluid"
             />

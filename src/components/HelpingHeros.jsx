@@ -41,7 +41,7 @@ const HelpingHerosContainer = styled.div`
 
 export const HelpingHeros = () => {
   return (
-    <Row className="py-5 mt-5">
+    <Row className="py-5">
       <Col md={9} className="mx-auto">
         <h2 className="text-center text-dark font-weight-bold">
           Our Helping Heros
