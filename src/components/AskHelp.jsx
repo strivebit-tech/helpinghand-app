@@ -33,7 +33,7 @@ export const AskForHelp = () => {
 
   return (
     <Row className="py-5" id="askforhelp">
-      <Col md={6} sm={12} className="mx-auto">
+      <Col md={9} sm={12} className="mx-auto">
         <h4 className="text-center font-weight-bold text-dark py-4">
           Submit your details to get help
         </h4>

@@ -21,3 +21,8 @@ $warning: #ffb300;
 .btn {
   box-shadow: none !important;
 }
+
+.btn,
+.form-control {
+  border-radius: 0;
+}
