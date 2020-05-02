@@ -1,6 +1,6 @@
 import React from "react";
 import { Formik } from "formik";
-import { Alert, Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import { states } from "../lib/states";
 
 export const AskHelpForm = ({ formSubmit }) => {
@@ -54,7 +54,7 @@ export const AskHelpForm = ({ formSubmit }) => {
           }
           if (!values.pincode) {
             errors.pincode = "Pincode is required.";
-          } else if (values.pincode.length != 6) {
+          } else if (values.pincode.length !== 6) {
             errors.pincode = "Pincode is invalid.";
           }
 

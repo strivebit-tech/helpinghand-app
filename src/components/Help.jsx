@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import { HelpItem } from "./HelpItem";
-import { FaSpinner, FaCircleNotch } from "react-icons/fa";
 import { MyModal } from "./Modal";
-import auth from "../lib/auth";
 import api from "../api";
 import { Loader } from "./Loader";
 import { Link } from "react-router-dom";
+import userContext from "../context/userContext";
 
 export const Help = () => {
+  //Get user from context
+  const { user } = useContext(userContext);
+
   const [initial, setInitial] = useState(true);
   const [finding, setFinding] = useState(false);
   const [data, setData] = useState([]);
@@ -49,9 +51,8 @@ export const Help = () => {
   }, [position.coords]);
 
   const doHelp = needy_id => {
-    const helper_id = auth.isAuthenticated();
     api
-      .doHelp(needy_id, helper_id)
+      .doHelp(needy_id, user)
       .then(res => {
         if (res.status === "Success") {
           setSuccess("Wonderful, you can now contact person to help him.");
@@ -87,13 +88,14 @@ export const Help = () => {
       setError("Location not available");
     }
     navigator.geolocation &&
-      navigator.geolocation.getCurrentPosition(setPosition, error =>
-        setError(error.message)
-      );
+      navigator.geolocation.getCurrentPosition(setPosition, error => {
+        setError(error.message);
+        setFinding(false);
+      });
   };
 
   const helpPress = helpitem => {
-    if (!auth.isAuthenticated()) {
+    if (!user) {
       window.location.href = "adduser?c=helpothers";
       return;
     }
@@ -114,7 +116,7 @@ export const Help = () => {
       <Row className="py-5">
         <Col md={9} sm={12} className="text-center  mx-auto ">
           <h4>People looking for help</h4>
-          {auth.isAuthenticated() ? (
+          {user ? (
             !finding && (
               <Button
                 className="mt-3"

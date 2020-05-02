@@ -33,9 +33,12 @@ export const MyModal = ({ showModal, handleClose, item, onSave }) => {
         <div className="" ref={textRef}>
           <h5 className="font-weight-bold mb-0">{name}</h5>
           <div className="text-accent text-sm">{occupation}</div>
+          <div className="text-accent text-sm">{family_members} members</div>
           <div className="text-dark font-weight-bold">{mobile_no}</div>
           <div className="d-flex justify-content-between">
-            <div className="text-muted">{street + " " + city}</div>
+            <div className="text-muted">
+              {street + " " + city + ", " + state}
+            </div>
             <div>{/* <strong>5km</strong> */}</div>
           </div>
         </div>

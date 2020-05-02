@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Row, Col, Alert } from "react-bootstrap";
 import api from "../api";
 import { DetailsForm } from "./DetailsForm";
@@ -6,6 +6,7 @@ import { VerifyOTPForm } from "./VerifyOTPForm";
 import randomNumber from "../lib/random";
 import auth from "../lib/auth";
 import { useLocation, Redirect } from "react-router";
+import userContext from "../context/userContext";
 
 export const Adduser = props => {
   const { search } = useLocation();
@@ -15,6 +16,7 @@ export const Adduser = props => {
   const [sessionId, setSessionId] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const { user, setUser } = useContext(userContext);
 
   const sendOTP = (v, { setSubmitting }) => {
     setError(null);
@@ -56,6 +58,8 @@ export const Adduser = props => {
               if (res.status === "Success") {
                 setSuccess("Authentication Successfull");
                 auth.setAuthentication(res.data.id);
+                setUser();
+
                 window.location.href = search ? search.split("=")[1] : "/";
               } else {
                 setError("Error processing request.");
@@ -74,7 +78,7 @@ export const Adduser = props => {
       });
   };
 
-  if (auth.isAuthenticated()) return <Redirect to="/" />;
+  if (user) return <Redirect to="/" />;
   return (
     <>
       <Row className="py-5">

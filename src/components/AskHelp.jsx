@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Row, Col, Button, Alert } from "react-bootstrap";
+import { Row, Col, Button, Alert } from "react-bootstrap";
 import api from "../api";
 import { AskHelpForm } from "./AskHelpForm";
 
@@ -21,7 +21,7 @@ export const AskForHelp = () => {
           setShowForm(false);
         } else if (res.status === "Failed") {
           let error = "";
-          for (let [key, value] of Object.entries(res.errors)) {
+          for (let [value] of Object.entries(res.errors)) {
             error += `${value}, `;
           }
 

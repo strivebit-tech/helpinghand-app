@@ -1,7 +1,7 @@
-import React, { createRef } from "react";
+import React from "react";
 import { Row, Col, Button } from "react-bootstrap";
 export const HelpItem = ({ data, onHelpPress }) => {
-  const { name, occupation, street, city, state } = data;
+  const { name, occupation, street, city } = data;
   return (
     <Col className="mb-3">
       <Row className={"bg-white border border rounded align-items-center py-2"}>

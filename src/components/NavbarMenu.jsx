@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Navbar, Nav, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import logo from "../assets/helpinghands.png";
-import auth from "../lib/auth";
+import userContext from "../context/userContext";
 
 export const NavbarMenu = () => {
   const [time, setTime] = useState(new Date());
+  const { user } = useContext(userContext);
 
   React.useEffect(() => {
     setTimeout(() => {
@@ -44,7 +45,7 @@ export const NavbarMenu = () => {
               <strong>Help Others</strong>
             </Nav.Item>
           </Link>
-          {auth.isAuthenticated() ? (
+          {user ? (
             <Link to="/contributions" className="nav-link">
               <Nav.Item>
                 <Button variant="light" className="rounded-pill shadow-none">

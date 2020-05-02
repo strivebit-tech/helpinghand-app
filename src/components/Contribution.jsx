@@ -1,23 +1,23 @@
-import React, { useState } from "react";
-import { Row, Col } from "react-bootstrap";
-import auth from "../lib/auth";
+import React, { useState, useContext } from "react";
+import { Row, Col, Alert } from "react-bootstrap";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
 import { ContributionItem } from "./ContributionItem";
 import api from "../api";
 import { Loader } from "./Loader";
+import userContext from "../context/userContext";
 
 export const Contribution = () => {
   const [contributions, setContributions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { user } = useContext(userContext);
 
-  React.useEffect(() => {
-    const id = auth.isAuthenticated();
-    if (id) {
+  const getHelpDone = () => {
+    if (user) {
       setLoading(true);
       api
-        .getHelpDone(id)
+        .getHelpDone(user)
         .then(res => {
           if (res.status === "Success") {
             setContributions(res.data.to);
@@ -32,9 +32,13 @@ export const Contribution = () => {
           setLoading(false);
         });
     }
-  }, [contributions.length]);
+  };
 
-  return auth.isAuthenticated() ? (
+  React.useEffect(() => {
+    getHelpDone();
+  }, [contributions.length, user]);
+
+  return user ? (
     <Row className="py-5">
       <Col md={9} className="mx-auto text-center">
         <h2 className="font-weight-bold">Your Contributions</h2>
@@ -51,6 +55,7 @@ export const Contribution = () => {
         )}
       </Col>
       <Col md={6} className="mx-auto mt-4">
+        {error && <Alert variant="danger">{error}</Alert>}
         <Loader loading={loading} />
         {contributions.length
           ? contributions.map((c, index) => (
