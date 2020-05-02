@@ -5,6 +5,7 @@ import { FaSpinner, FaCircleNotch } from "react-icons/fa";
 import { MyModal } from "./Modal";
 import auth from "../lib/auth";
 import api from "../api";
+import { Loader } from "./Loader";
 
 export const Help = () => {
   const [finding, setFinding] = useState(false);
@@ -26,6 +27,11 @@ export const Help = () => {
       .then(res => {
         if (res.status === "Success") {
           setData(res.data);
+          if (!res.data.length) {
+            setError("No people found.");
+          }
+        } else {
+          setError("Error finding persons.");
         }
       })
       .catch(err => setError("Error finding persons."))
@@ -66,12 +72,14 @@ export const Help = () => {
           } else if (result.state === "prompt") {
             getPosition(setPosition, setError);
           } else if (result.state === "denied") {
-            setError("User permission denied");
+            setError("Please enable location access in site setting.");
+            setFinding(false);
           }
         });
   };
 
   const getPosition = (setPosition, setError) => {
+    console.log("GET POSTITON");
     navigator.geolocation.getCurrentPosition(setPosition, error =>
       setError(error.message)
     );
@@ -79,7 +87,7 @@ export const Help = () => {
 
   const helpPress = helpitem => {
     if (!auth.isAuthenticated()) {
-      window.location.href = "adduser";
+      window.location.href = "adduser?c=helpothers";
       return;
     }
     setShowModal(true);
@@ -105,13 +113,13 @@ export const Help = () => {
               variant="primary"
               onClick={findnearByPeople}
             >
-              <strong>Find people</strong>
+              <strong>{data.length ? "Refresh" : "Find people"}</strong>
             </Button>
           )}
         </Col>
       </Row>
       <Row>
-        <Col md={9} sm={12} className="">
+        <Col md={9} sm={12} className="mx-auto">
           <div className="text-center">
             {error && <h6 className="text-danger">{error}</h6>}
             {success && <h6 className="text-success">{success}</h6>}
@@ -120,26 +128,18 @@ export const Help = () => {
           {/* <h5>No results found.</h5> */}
         </Col>
         <Col md={9} className={"mt-4 mx-auto"}>
-          {finding ? (
-            <div className="text-center text-primary">
-              <div className="rotate">
-                <FaCircleNotch color="" size={30} />
-              </div>
-              Finding
-            </div>
-          ) : data.length ? (
-            data.map((i, k) => (
-              <HelpItem
-                data={i}
-                key={k}
-                onHelpPress={() => {
-                  helpPress(i);
-                }}
-              />
-            ))
-          ) : (
-            "No Person to help"
-          )}
+          <Loader loading={finding} />
+          {!finding && data.length
+            ? data.map((i, k) => (
+                <HelpItem
+                  data={i}
+                  key={k}
+                  onHelpPress={() => {
+                    helpPress(i);
+                  }}
+                />
+              ))
+            : ""}
         </Col>
       </Row>
     </>

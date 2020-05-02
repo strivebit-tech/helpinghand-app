@@ -34,6 +34,16 @@ export const NavbarMenu = () => {
 
       <Navbar.Collapse className="" id="basic-navbar-nav">
         <Nav className={"ml-auto mr-2 align-items-center"}>
+          <Link to="/askforhelp" className="nav-link">
+            <Nav.Item className="text-accent">
+              <strong>Ask for help</strong>
+            </Nav.Item>
+          </Link>
+          <Link to="/helpothers" className="nav-link">
+            <Nav.Item className="text-success">
+              <strong>Help Others</strong>
+            </Nav.Item>
+          </Link>
           {auth.isAuthenticated() ? (
             <Link to="/contributions" className="nav-link">
               <Nav.Item>

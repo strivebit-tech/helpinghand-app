@@ -5,8 +5,10 @@ import { DetailsForm } from "./DetailsForm";
 import { VerifyOTPForm } from "./VerifyOTPForm";
 import randomNumber from "../lib/random";
 import auth from "../lib/auth";
+import { useLocation, Redirect } from "react-router";
 
-export const Adduser = () => {
+export const Adduser = props => {
+  const { search } = useLocation();
   const [values, setValues] = useState({ name: "", mobile: "" });
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState(0);
@@ -48,15 +50,18 @@ export const Adduser = () => {
       .verifyOtp(sessionId, v.otp)
       .then(res => {
         if (res.Status === "Success") {
-          api.createNewHelper(values).then(res => {
-            if (res.status === "Success") {
-              setSuccess("Authentication Successfull");
-              auth.setAuthentication(res.data.id);
-              window.location.href = "/";
-            } else {
-              setError("Error processing request.");
-            }
-          });
+          api
+            .createNewHelper(values)
+            .then(res => {
+              if (res.status === "Success") {
+                setSuccess("Authentication Successfull");
+                auth.setAuthentication(res.data.id);
+                window.location.href = search ? search.split("=")[1] : "/";
+              } else {
+                setError("Error processing request.");
+              }
+            })
+            .catch(err => setError("Error processing request."));
         } else {
           setError("Invalid OTP entered");
         }
@@ -69,6 +74,7 @@ export const Adduser = () => {
       });
   };
 
+  if (auth.isAuthenticated()) return <Redirect to="/" />;
   return (
     <>
       <Row className="py-5">

@@ -1,7 +1,6 @@
 import React from "react";
 
 export const ContributionItem = ({ data }) => {
-  console.log(data);
   const { name, street, city } = data;
   return (
     <>

@@ -18,10 +18,15 @@ export const AskHelpForm = ({ formSubmit }) => {
           pincode: ""
         }}
         onSubmit={formSubmit}
+        validateOnChange={true}
+        validateOnBlur={true}
         validate={values => {
           const errors = {};
+
           if (!values.name) {
             errors.name = "Name is required";
+          } else if (!(values.name.length >= 3 && values.name.length <= 30)) {
+            errors.name = "Minimum 3 characters, Maximum 30 characters";
           }
           if (!values.mobile_no) {
             errors.mobile_no = "Mobile is required.";
@@ -31,6 +36,9 @@ export const AskHelpForm = ({ formSubmit }) => {
 
           if (!values.street) {
             errors.street = "Street Address is required.";
+          } else if (values.street.length > 50) {
+            errors.street =
+              "Street Address should be less than or equal to 50 characters.";
           }
 
           if (!values.city) {
@@ -70,7 +78,10 @@ export const AskHelpForm = ({ formSubmit }) => {
                   <Form.Control
                     name="name"
                     value={values.name}
-                    onChange={handleChange}
+                    onChange={e =>
+                      e.target.value.match(/^([A-Za-z]\s?)*$/) &&
+                      handleChange(e)
+                    }
                     type="text"
                   ></Form.Control>
                   {touched.name && errors.name && (
@@ -85,7 +96,9 @@ export const AskHelpForm = ({ formSubmit }) => {
                     name="occupation"
                     value={values.occupation}
                     type="text"
-                    onChange={handleChange}
+                    onChange={e =>
+                      e.target.value.match(/^[A-Za-z]*$/) && handleChange(e)
+                    }
                   ></Form.Control>
                   {touched.occupation && errors.occupation && (
                     <div className="text-sm text-danger">
@@ -128,9 +141,17 @@ export const AskHelpForm = ({ formSubmit }) => {
                   </Form.Label>
                   <Form.Control
                     name={"family_members"}
-                    onChange={handleChange}
-                    type="number"
+                    onChange={e =>
+                      setFieldValue(
+                        "family_members",
+                        e.target.value.replace(/\D/, "")
+                      )
+                    }
+                    type="text"
+                    pattern={"[0-9]*"}
                     min={0}
+                    max={9}
+                    maxLength={1}
                     value={values.family_members}
                   ></Form.Control>
                 </Form.Group>
@@ -146,7 +167,12 @@ export const AskHelpForm = ({ formSubmit }) => {
                   <Form.Control
                     name="street"
                     value={values.street}
-                    onChange={handleChange}
+                    onChange={e =>
+                      setFieldValue(
+                        "street",
+                        e.target.value.replace(/[^a-zA-Z0-9, ]/, "")
+                      )
+                    }
                     type="text"
                   ></Form.Control>
                   {touched.street && errors.street && (
@@ -160,7 +186,10 @@ export const AskHelpForm = ({ formSubmit }) => {
                   <Form.Control
                     name={"city"}
                     value={values.city}
-                    onChange={handleChange}
+                    onChange={e =>
+                      e.target.value.match(/^([A-Za-z]\s?)*$/) &&
+                      handleChange(e)
+                    }
                     type="text"
                   ></Form.Control>
                   {touched.city && errors.city && (
@@ -180,6 +209,7 @@ export const AskHelpForm = ({ formSubmit }) => {
                     onChange={handleChange}
                     name="state"
                   >
+                    <option value="">Select State</option>
                     {states.map((state, i) => (
                       <option key={i} value={state}>
                         {state}
