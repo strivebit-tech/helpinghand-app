@@ -6,8 +6,10 @@ import { MyModal } from "./Modal";
 import auth from "../lib/auth";
 import api from "../api";
 import { Loader } from "./Loader";
+import { Link } from "react-router-dom";
 
 export const Help = () => {
+  const [initial, setInitial] = useState(true);
   const [finding, setFinding] = useState(false);
   const [data, setData] = useState([]);
   const [position, setPosition] = useState({});
@@ -62,6 +64,7 @@ export const Help = () => {
 
   const findnearByPeople = () => {
     setFinding(true);
+    setInitial(false);
     navigator &&
       navigator.permissions &&
       navigator.permissions
@@ -80,9 +83,13 @@ export const Help = () => {
 
   const getPosition = (setPosition, setError) => {
     console.log("GET POSTITON");
-    navigator.geolocation.getCurrentPosition(setPosition, error =>
-      setError(error.message)
-    );
+    if (!navigator.geolocation) {
+      setError("Location not available");
+    }
+    navigator.geolocation &&
+      navigator.geolocation.getCurrentPosition(setPosition, error =>
+        setError(error.message)
+      );
   };
 
   const helpPress = helpitem => {
@@ -107,14 +114,22 @@ export const Help = () => {
       <Row className="py-5">
         <Col md={9} sm={12} className="text-center  mx-auto ">
           <h4>People looking for help</h4>
-          {!finding && (
-            <Button
-              className="mt-3"
-              variant="primary"
-              onClick={findnearByPeople}
-            >
-              <strong>{data.length ? "Refresh" : "Find people"}</strong>
-            </Button>
+          {auth.isAuthenticated() ? (
+            !finding && (
+              <Button
+                className="mt-3"
+                variant="primary"
+                onClick={findnearByPeople}
+              >
+                <strong>{data.length ? "Refresh" : "Find people"}</strong>
+              </Button>
+            )
+          ) : (
+            <Link to="/adduser?c=helpothers">
+              <Button variant="accent">
+                <strong>Login to Help</strong>
+              </Button>
+            </Link>
           )}
         </Col>
       </Row>
@@ -129,16 +144,18 @@ export const Help = () => {
         </Col>
         <Col md={9} className={"mt-4 mx-auto"}>
           <Loader loading={finding} />
-          {!finding && data.length
-            ? data.map((i, k) => (
-                <HelpItem
-                  data={i}
-                  key={k}
-                  onHelpPress={() => {
-                    helpPress(i);
-                  }}
-                />
-              ))
+          {!finding
+            ? data.length
+              ? data.map((i, k) => (
+                  <HelpItem
+                    data={i}
+                    key={k}
+                    onHelpPress={() => {
+                      helpPress(i);
+                    }}
+                  />
+                ))
+              : !initial && "No people found"
             : ""}
         </Col>
       </Row>
