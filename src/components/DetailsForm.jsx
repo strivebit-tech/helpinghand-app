@@ -28,7 +28,8 @@ export const DetailsForm = ({ formSubmit }) => {
         errors,
         isSubmitting,
         handleChange,
-        handleSubmit
+        handleSubmit,
+        setFieldValue
       }) => (
         <>
           <Form.Group>
@@ -37,7 +38,9 @@ export const DetailsForm = ({ formSubmit }) => {
               name="name"
               value={values.name}
               type="text"
-              onChange={handleChange}
+              onChange={e =>
+                e.target.value.match(/^([A-Za-z]\s?)*$/) && handleChange(e)
+              }
               required
             ></Form.Control>
             {touched.name && errors.name && (
@@ -50,7 +53,9 @@ export const DetailsForm = ({ formSubmit }) => {
             <Form.Control
               name="mobile"
               value={values.mobile}
-              onChange={handleChange}
+              onChange={e =>
+                setFieldValue("mobile", e.target.value.replace(/\D/, ""))
+              }
               type="tel"
               maxLength={10}
               required

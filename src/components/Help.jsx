@@ -25,6 +25,8 @@ export const Help = () => {
   };
 
   const findPeople = () => {
+    setError(null);
+    setSuccess(null);
     const { latitude, longitude } = position.coords || {};
     api
       .getNearbyPerson({ latitude, longitude })

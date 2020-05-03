@@ -17,6 +17,7 @@ export const Adduser = props => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const { user, setUser } = useContext(userContext);
+  const [resending, setResending] = useState(false);
 
   const sendOTP = (v, { setSubmitting }) => {
     setError(null);
@@ -30,6 +31,7 @@ export const Adduser = props => {
       .sendOtp(v.mobile, newOtp)
       .then(res => {
         if (res.Status === "Success") {
+          setSuccess("OTP sent successfully");
           setOtpSent(true);
           setSessionId(res.Details);
         } else {
@@ -41,6 +43,32 @@ export const Adduser = props => {
       })
       .finally(() => {
         setSubmitting(false);
+      });
+  };
+
+  const resendOTP = () => {
+    setError(null);
+    setResending(true);
+    const r = randomNumber();
+    const newOtp = otp || r;
+    setOtp(newOtp);
+
+    api
+      .sendOtp(values.mobile, newOtp)
+      .then(res => {
+        if (res.Status === "Success") {
+          setOtpSent(true);
+          setSessionId(res.Details);
+          setSuccess("OTP sent successfully");
+        } else {
+          setError("Error sending otp please check mobile entered");
+        }
+      })
+      .catch(err => {
+        setError("Error proccessing request. Try again later.");
+      })
+      .finally(() => {
+        setResending(false);
       });
   };
 
@@ -94,7 +122,11 @@ export const Adduser = props => {
           {!otpSent ? (
             <DetailsForm formSubmit={sendOTP} />
           ) : (
-            <VerifyOTPForm formSubmit={verifyOTP} />
+            <VerifyOTPForm
+              formSubmit={verifyOTP}
+              resendOtp={resendOTP}
+              resending={resending}
+            />
           )}
         </Col>
       </Row>

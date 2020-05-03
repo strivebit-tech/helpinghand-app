@@ -2,7 +2,7 @@ import React from "react";
 import { Formik } from "formik";
 import { Form, Button } from "react-bootstrap";
 
-export const VerifyOTPForm = ({ formSubmit }) => {
+export const VerifyOTPForm = ({ formSubmit, resendOtp, resending }) => {
   return (
     <Formik
       initialValues={{ otp: "" }}
@@ -18,18 +18,28 @@ export const VerifyOTPForm = ({ formSubmit }) => {
       }}
       onSubmit={formSubmit}
     >
-      {({ values, touched, errors, handleSubmit, handleChange }) => (
+      {({
+        values,
+        touched,
+        errors,
+        handleSubmit,
+        handleChange,
+        setFieldValue,
+        isSubmitting
+      }) => (
         <>
           <Form.Group>
             <Form.Label>Enter OTP</Form.Label>
             <Form.Control
+              name="otp"
               autoComplete="off"
               type="tel"
+              value={values.otp}
               maxLength={4}
+              onChange={e =>
+                setFieldValue("otp", e.target.value.replace(/[^0-9]/, ""))
+              }
               required
-              defaultValue={""}
-              name="otp"
-              onChange={handleChange}
             ></Form.Control>
             {touched.otp && errors.otp && (
               <div className="text-sm text-danger">{errors.otp}</div>
@@ -37,12 +47,23 @@ export const VerifyOTPForm = ({ formSubmit }) => {
           </Form.Group>
 
           <Button
-            type="button"
+            type="submit"
             variant="primary"
             className="w-100"
             onClick={handleSubmit}
+            disabled={resending || isSubmitting}
           >
             <strong>Verify and Continue</strong>
+          </Button>
+
+          <Button
+            type="submit"
+            variant="secondary"
+            className="w-100"
+            onClick={resendOtp}
+            disabled={resending || isSubmitting}
+          >
+            <strong>Resend OTP</strong>
           </Button>
         </>
       )}

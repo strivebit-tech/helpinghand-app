@@ -1,12 +1,13 @@
+import auth from "../lib/auth";
+
 const s = "9a3d08fa-5bb3-11ea-9fa5-0200cd936042";
-const root = "https://helpings.herokuapp.com/api/";
+const root = "https://helpings.herokuapp.com/";
 
 const headers = new Headers();
+const authHeader = new Headers();
 headers.append("Content-Type", "application/json");
-headers.append(
-  "Authorization",
-  "Token 5feb126e-b663-4d22-9jkfdjkaur-46b1e7a4353eieomfueywomB2LRLxbmaESfqEX3u7TNC30jh-lvyNvyYh321V9FBoN6Ixg3DYAJSMNkJiwBfvdbdxCkQr_xubUKz7EpM7mtA==Iys"
-);
+authHeader.append("Content-Type", "application/json");
+authHeader.append("Authorization", "Token " + auth.isAuthenticated());
 
 export default {
   sendOtp: async (mobile, otp) => {
@@ -26,7 +27,7 @@ export default {
   },
 
   addPerson: async data => {
-    const res = await fetch(root + `person/create/`, {
+    const res = await fetch(root + `create/person`, {
       method: "POST",
       headers: headers,
       body: JSON.stringify(data)
@@ -36,7 +37,7 @@ export default {
   },
 
   createNewHelper: async data => {
-    const res = await fetch(root + `helper/create/`, {
+    const res = await fetch(root + `create/helper`, {
       method: "POST",
       headers: headers,
       body: JSON.stringify(data)
@@ -46,32 +47,28 @@ export default {
   },
 
   getPerson: async data => {
-    const res = await fetch(root + `person/all/`, {
+    const res = await fetch(root + `api/person/all`, {
       method: "GET",
-      headers: headers
+      headers: authHeader
     });
 
     return await res.json();
   },
 
   getNearbyPerson: async data => {
-    try {
-      const res = await fetch(root + `person/needy/near/`, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(data)
-      });
+    const res = await fetch(root + `api/person/needy/near`, {
+      method: "POST",
+      headers: authHeader,
+      body: JSON.stringify(data)
+    });
 
-      return await res.json();
-    } catch (err) {
-      return err;
-    }
+    return await res.json();
   },
 
   doHelp: async (needy_id, helper_id) => {
-    const res = await fetch(root + `person/help/`, {
+    const res = await fetch(root + `api/person/help`, {
       method: "POST",
-      headers: headers,
+      headers: authHeader,
       body: JSON.stringify({ helper_id, needy_id })
     });
 
@@ -79,9 +76,9 @@ export default {
   },
 
   getHelpDone: async helper_id => {
-    const res = await fetch(root + `person/helper/${helper_id}/`, {
+    const res = await fetch(root + `api/person/helper/${helper_id}`, {
       method: "GET",
-      headers: headers
+      headers: authHeader
     });
 
     return await res.json();
