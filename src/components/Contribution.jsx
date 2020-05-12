@@ -6,6 +6,7 @@ import { ContributionItem } from "./ContributionItem";
 import api from "../api";
 import { Loader } from "./Loader";
 import userContext from "../context/userContext";
+import ReactPlaceholder from "react-placeholder/lib";
 
 export const Contribution = () => {
   const [contributions, setContributions] = useState([]);
@@ -56,12 +57,19 @@ export const Contribution = () => {
       </Col>
       <Col md={6} className="mx-auto mt-4">
         {error && <Alert variant="danger">{error}</Alert>}
-        <Loader loading={loading} />
-        {contributions.length
-          ? contributions.map((c, index) => (
-              <ContributionItem data={c} key={index} />
-            ))
-          : ""}
+        {/* <Loader loading={loading} /> */}
+        <ReactPlaceholder
+          type={"text"}
+          ready={!loading}
+          rows={3}
+          showLoadingAnimation={true}
+        >
+          {contributions.length
+            ? contributions.map((c, index) => (
+                <ContributionItem data={c} key={index} />
+              ))
+            : ""}
+        </ReactPlaceholder>
       </Col>
     </Row>
   ) : (

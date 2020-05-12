@@ -6,6 +6,7 @@ import api from "../api";
 import { Loader } from "./Loader";
 import { Link } from "react-router-dom";
 import userContext from "../context/userContext";
+import ReactPlaceholder from "react-placeholder";
 
 export const Help = () => {
   //Get user from context
@@ -147,20 +148,28 @@ export const Help = () => {
           {/* <h5>No results found.</h5> */}
         </Col>
         <Col md={9} className={"mt-4 mx-auto"}>
-          <Loader loading={finding} />
-          {!finding
-            ? data.length
-              ? data.map((i, k) => (
-                  <HelpItem
-                    data={i}
-                    key={k}
-                    onHelpPress={() => {
-                      helpPress(i);
-                    }}
-                  />
-                ))
-              : !initial && "No people found"
-            : ""}
+          {/* <Loader loading={finding} /> */}
+
+          <ReactPlaceholder
+            type="text"
+            row={4}
+            ready={!finding}
+            showLoadingAnimation={true}
+          >
+            {!finding
+              ? data.length
+                ? data.map((i, k) => (
+                    <HelpItem
+                      data={i}
+                      key={k}
+                      onHelpPress={() => {
+                        helpPress(i);
+                      }}
+                    />
+                  ))
+                : !initial && ""
+              : ""}
+          </ReactPlaceholder>
         </Col>
       </Row>
     </>

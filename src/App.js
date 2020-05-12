@@ -11,6 +11,7 @@ import { Contribution } from "./components/Contribution";
 import { NotFound } from "./components/NotFound";
 import userContext from "./context/userContext";
 import auth from "./lib/auth";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 function App() {
   const [user, setUser] = useState(auth.isAuthenticated());

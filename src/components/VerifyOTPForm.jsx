@@ -59,7 +59,7 @@ export const VerifyOTPForm = ({ formSubmit, resendOtp, resending }) => {
           <Button
             type="submit"
             variant="secondary"
-            className="w-100"
+            className="w-100 mt-3"
             onClick={resendOtp}
             disabled={resending || isSubmitting}
           >

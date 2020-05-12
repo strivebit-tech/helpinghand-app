@@ -49,6 +49,7 @@ export const Adduser = props => {
   const resendOTP = () => {
     setError(null);
     setResending(true);
+    setSuccess(null);
     const r = randomNumber();
     const newOtp = otp || r;
     setOtp(newOtp);
@@ -60,6 +61,7 @@ export const Adduser = props => {
           setOtpSent(true);
           setSessionId(res.Details);
           setSuccess("OTP sent successfully");
+          setResending(false);
         } else {
           setError("Error sending otp please check mobile entered");
         }

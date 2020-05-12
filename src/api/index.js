@@ -1,6 +1,7 @@
 import auth from "../lib/auth";
 
-const s = "9a3d08fa-5bb3-11ea-9fa5-0200cd936042";
+const s = "a971572c-8e94-11ea-9fa5-0200cd936042";
+// const s = "9a3d08fa-5bb3-11ea-9fa5-0200cd936042";
 const root = "https://helpings.herokuapp.com/";
 
 const headers = new Headers();
@@ -11,8 +12,13 @@ authHeader.append("Authorization", "Token " + auth.isAuthenticated());
 
 export default {
   sendOtp: async (mobile, otp) => {
+    const h = new Headers();
+    h.append("Content-Type", "application/x-www-form-urlencoded");
     const res = await fetch(
-      `https://2factor.in/API/V1/${s}/SMS/${mobile}/${otp}/HelpingHands`
+      `https://2factor.in/API/V1/${s}/SMS/${mobile}/${otp}/helper%20template`,
+      {
+        headers: h
+      }
     );
 
     return await res.json();
